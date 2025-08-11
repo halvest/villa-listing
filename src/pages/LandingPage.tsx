@@ -5,7 +5,7 @@ import { useOutletContext, useLocation } from 'react-router-dom';
 // Import semua komponen section Anda
 import Hero from '../components/Hero';
 import About from '../components/About';
-import VillaListings from '../components/VillaListings';
+import VillaListings from '../components/FeaturedListings';
 import ProfitSimulationForm from '../components/ProfitSimulationForm';
 import FAQ from '../components/FAQ';
 
