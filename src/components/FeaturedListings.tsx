@@ -61,10 +61,10 @@ export default function FeaturedListings() {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-            Peluang Investasi Pilihan
+            Pilih Unit Villa Investasi Anda Sekarang Juga!
           </h2>
           <p className="text-base md:text-lg text-slate-600 leading-relaxed">
-            Temukan aset properti terkurasi yang dirancang untuk memberikan arus kas pasif dan apresiasi nilai yang solid untuk portofolio Anda.
+            Temukan Unit Villa Investasi Anda.
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export default function FeaturedListings() {
             to="/listings"
             className="inline-flex items-center gap-2 px-8 py-3 bg-sky-600 text-white font-semibold rounded-lg shadow-lg shadow-sky-500/30 hover:bg-sky-700 focus:ring-4 focus:ring-sky-300 transition-transform transform hover:scale-105"
           >
-            Lihat Semua Peluang Investasi <ArrowRight size={18} />
+            Lihat Semua <ArrowRight size={18} />
           </Link>
         </div>
       </div>

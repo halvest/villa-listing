@@ -49,13 +49,13 @@ const About = React.memo(() => {
               variants={fadeInItem}
               className="font-semibold text-sky-600 uppercase tracking-wider text-sm md:text-base"
             >
-              Investasi Properti Pintar
+              Investasi Villa Yogyakarta
             </motion.span>
             <motion.h2
               variants={fadeInItem}
               className="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-5 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700"
             >
-              Miliki Villa Eksklusif & Raih Kebebasan Finansial di Jantung Yogyakarta
+              Miliki Villa Eksklusif & Raih Kebebasan Finansial 
             </motion.h2>
             <motion.p
               variants={fadeInItem}
@@ -77,7 +77,7 @@ const About = React.memo(() => {
               <li className="flex items-start gap-3">
                 <CheckCircle className="text-green-500 mt-1 flex-shrink-0" size={20} />
                 <span className="text-slate-700">
-                  <strong>Manajemen Terintegrasi:</strong> Mulai dari pemasaran, reservasi, hingga perawatan, semuanya kami tangani.
+                  <strong>Manajemen Professional:</strong> Mulai dari pemasaran, reservasi, hingga perawatan, semuanya kami tangani.
                 </span>
               </li>
               <li className="flex items-start gap-3">
