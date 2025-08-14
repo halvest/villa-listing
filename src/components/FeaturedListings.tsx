@@ -4,15 +4,11 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../utils/supabase';
 import VillaCard from './VillaCard';
 import { ArrowRight } from 'lucide-react';
-
-// 1. Impor komponen dan style dari Swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, A11y } from 'swiper/modules';
+import { Pagination, A11y } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Tipe data Villa (tidak berubah)
 interface Villa {
   id: string;
   slug: string;
@@ -26,15 +22,13 @@ interface Villa {
   luas_tanah?: number;
 }
 
-// Skeleton loading (tidak berubah)
 const VillaCardSkeleton = () => (
-    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-4 animate-pulse w-full">
-      <div className="aspect-video bg-slate-200 rounded-lg mb-4"></div>
-      <div className="h-5 bg-slate-200 rounded w-3/4 mb-2"></div>
-      <div className="h-4 bg-slate-200 rounded w-1/2 mb-4"></div>
-      <div className="h-9 bg-slate-200 rounded w-full"></div>
-    </div>
-  );
+  <div className="bg-white border border-slate-200 rounded-xl p-3 animate-pulse">
+    <div className="aspect-video bg-slate-200 rounded-lg mb-3"></div>
+    <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+    <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+  </div>
+);
 
 export default function FeaturedListings() {
   const [villas, setVillas] = useState<Villa[]>([]);
@@ -44,18 +38,17 @@ export default function FeaturedListings() {
     const fetchFeaturedVillas = async () => {
       setLoading(true);
       try {
-        // 2. Ambil lebih banyak data agar slider lebih berisi
         const { data, error } = await supabase
           .from('villa_listings')
-          .select('*')
+          .select('id, slug, nama_listing, alamat_lengkap, harga, status, foto_urls, tipe_villa')
           .in('status', ['Tersedia', 'Promo'])
           .order('created_at', { ascending: false })
-          .limit(8); // Ambil 8 villa untuk slider
+          .limit(6); // Lebih ringan untuk mobile
 
         if (error) throw error;
         setVillas(data as Villa[]);
       } catch (error) {
-        console.error("Error fetching featured villas:", error);
+        console.error('Error fetching featured villas:', error);
       } finally {
         setLoading(false);
       }
@@ -64,79 +57,55 @@ export default function FeaturedListings() {
   }, []);
 
   return (
-    <section className="py-24 bg-slate-50 overflow-hidden">
-      <div className="container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-            Properti Pilihan Kami
-          </h2>
-          <p className="text-lg text-slate-600">
-            Berikut adalah beberapa properti investasi unggulan yang telah kami seleksi khusus untuk Anda.
-          </p>
-        </div>
+    <section className="py-16 bg-slate-50">
+      <div className="px-4 text-center max-w-3xl mx-auto mb-10">
+        <h2 className="text-2xl md:text-4xl font-extrabold mb-2 text-slate-800">
+          Properti Pilihan Kami
+        </h2>
+        <p className="text-sm md:text-lg text-slate-600">
+          Beberapa properti investasi unggulan yang kami pilih khusus untuk Anda.
+        </p>
       </div>
 
-      {/* 3. Ganti Grid dengan Swiper */}
-      <div className="w-full">
-        <Swiper
-            modules={[Navigation, Pagination, A11y]}
-            navigation // Menampilkan tombol navigasi (panah)
-            pagination={{ clickable: true }} // Menampilkan titik-titik paginasi
-            grabCursor={true}
-            loop={false}
-            className="!px-4 md:!px-8 !pb-12" // Tambahan padding untuk Swiper
-            // Konfigurasi responsif untuk jumlah slide
-            breakpoints={{
-                // Tampilan mobile (default)
-                320: {
-                    slidesPerView: 1.2,
-                    spaceBetween: 15,
-                    centeredSlides: true,
-                },
-                // Tampilan tablet
-                768: {
-                    slidesPerView: 2.5,
-                    spaceBetween: 20,
-                    centeredSlides: false,
-                },
-                // Tampilan desktop
-                1024: {
-                    slidesPerView: 3.5,
-                    spaceBetween: 30,
-                    centeredSlides: false,
-                },
-                 // Tampilan desktop besar
-                 1280: {
-                    slidesPerView: 4.2,
-                    spaceBetween: 30,
-                    centeredSlides: false,
-                }
-            }}
-        >
-          {loading ? (
-            Array.from({ length: 4 }).map((_, index) => (
-                <SwiperSlide key={index}>
-                    <VillaCardSkeleton />
-                </SwiperSlide>
+      <Swiper
+        modules={[Pagination, A11y]}
+        pagination={{ clickable: true }}
+        grabCursor
+        speed={500}
+        breakpoints={{
+          320: { slidesPerView: 1.05, spaceBetween: 10 },
+          640: { slidesPerView: 1.5, spaceBetween: 15 },
+          768: { slidesPerView: 2.5, spaceBetween: 20 },
+          1024: { slidesPerView: 3.5, spaceBetween: 25 }
+        }}
+        className="!px-4 pb-10"
+      >
+        {loading
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <SwiperSlide key={i}>
+                <VillaCardSkeleton />
+              </SwiperSlide>
             ))
-          ) : (
-            villas.map(villa => (
-                <SwiperSlide key={villa.id}>
-                    <VillaCard villa={villa} />
-                </SwiperSlide>
-            ))
-          )}
-        </Swiper>
-      </div>
-      
+          : villas.map((villa) => (
+              <SwiperSlide key={villa.id}>
+                <VillaCard
+                  villa={{
+                    ...villa,
+                    // Optimisasi gambar untuk mobile
+                    foto_urls: villa.foto_urls.map((url) => `${url}?w=500&auto=format`)
+                  }}
+                />
+              </SwiperSlide>
+            ))}
+      </Swiper>
+
       <div className="text-center mt-4">
-            <Link 
-                to="/listings"
-                className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-sky-500 text-white font-bold text-lg rounded-full shadow-lg shadow-sky-500/30 hover:bg-sky-600 focus:outline-none focus:ring-4 focus:ring-sky-300 transition-all duration-300 transform hover:scale-105"
-            >
-                Lihat Semua Properti
-                <ArrowRight />
-            </Link>
+        <Link
+          to="/listings"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 text-white font-semibold rounded-full shadow-md hover:bg-sky-600 focus:ring-4 focus:ring-sky-300 transition"
+        >
+          Lihat Semua Properti <ArrowRight size={18} />
+        </Link>
       </div>
     </section>
   );

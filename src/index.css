@@ -1,17 +1,21 @@
 /* src/index.css */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-  scroll-behavior: smooth; 
-}  
+  scroll-behavior: smooth;
+}
 
+/* Animasi kenburns lebih smooth dan looping */
 @keyframes kenburns-top-right {
   0% {
     transform: scale(1) translate(0, 0);
     transform-origin: 84% 16%;
+  }
+  50% {
+    transform: scale(1.1) translate(5px, -3px);
+    transform-origin: right top;
   }
   100% {
     transform: scale(1.15) translate(10px, -5px);
@@ -20,5 +24,25 @@ html {
 }
 
 .animate-kenburns {
-  animation: kenburns-top-right 7s ease-out both;
+  animation: kenburns-top-right 20s ease-in-out infinite alternate;
+}
+
+/* Efek glass untuk header */
+.glass-header {
+  @apply bg-white/10 backdrop-blur-md border-b border-white/20;
+  transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+/* Opsional: animasi fade-in umum */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.8s ease-in forwards;
 }

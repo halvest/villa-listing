@@ -235,7 +235,7 @@ export default function VillaFormModal({ villa, onClose, onSave }: VillaFormModa
                     <h3 className="text-xl font-bold text-slate-700 mb-4">Lokasi & Kontak</h3>
                     <FormTextarea label="Alamat Lengkap" name="alamat_lengkap" register={register} validation={{ required: true }} error={errors.alamat_lengkap} />
                     <FormTextarea label="URL Embed Peta Google Maps" name="lokasi_maps_iframe_url" register={register} rows={3}/>
-                    <FormInput label="Kontak Marketing (No. WA)" name="kontak_marketing" register={register} validation={{ required: true, pattern: {value: /^08\d{8,12}$/, message: "Format No. WA tidak valid"} }} error={errors.kontak_marketing} />
+                    <FormInput label="Kontak Marketing (No. WA)" name="kontak_marketing" register={register} validation={{ required: true, pattern: {value: /^62\d{8,12}$/, message: "Format No. WA tidak valid"} }} error={errors.kontak_marketing} />
                  </div>
               )}
 

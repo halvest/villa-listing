@@ -4,7 +4,6 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 
-// Definisikan tipe untuk context agar lebih aman
 type OutletContextType = {
   setCurrentSection: (section: string) => void;
   handleSectionChange: (sectionId: string) => void;
@@ -15,33 +14,44 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Update currentSection saat berpindah halaman
   useEffect(() => {
-    // Jika kita tidak di halaman utama, jangan sorot menu section manapun
     if (location.pathname !== '/') {
       setCurrentSection('');
     } else {
-      // Jika kembali ke halaman utama, set default ke 'home'
       setCurrentSection('home');
     }
   }, [location.pathname]);
+
+  // Scroll otomatis ke section saat navigate dari halaman lain
+  useEffect(() => {
+    if (location.pathname === '/' && location.state?.scrollToSection) {
+      const targetSection = location.state.scrollToSection;
+      setTimeout(() => {
+        document.getElementById(targetSection)?.scrollIntoView({ behavior: 'smooth' });
+      }, 300); // Delay sedikit agar DOM siap
+    }
+  }, [location]);
 
   const handleSectionChange = (sectionId: string) => {
     if (location.pathname === '/') {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      // Kembali ke halaman utama sambil "membawa pesan" untuk scroll
       navigate('/', { state: { scrollToSection: sectionId } });
     }
   };
 
   return (
-    <div className="bg-white">
-      <Header currentSection={currentSection} onSectionChange={handleSectionChange} />
-      
-      {/* Konten utama dengan padding atas seukuran tinggi header */}
+    <div className="bg-white dark:bg-gray-900">
+      {/* Header glass effect */}
+      <Header
+        currentSection={currentSection}
+        onSectionChange={handleSectionChange}
+      />
+
+      {/* Main content (beri jarak dari header fixed) */}
       <main className="pt-20">
-        {/* --- PERBAIKAN DI SINI: Tambahkan handleSectionChange ke context --- */}
-        <Outlet context={{ setCurrentSection, handleSectionChange }} />
+        <Outlet context={{ setCurrentSection, handleSectionChange } satisfies OutletContextType} />
       </main>
 
       <Footer />

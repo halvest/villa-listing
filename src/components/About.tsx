@@ -3,14 +3,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Award, ShieldCheck, TrendingUp } from 'lucide-react';
 import type { Icon } from 'lucide-react';
-
-// Swiper Components & Styles
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-// --- Komponen Kartu Pilar yang Disesuaikan Temanya ---
+// ====== Reusable Pillar Card Component ======
 interface PillarCardProps {
   icon: React.ReactElement<Icon>;
   title: string;
@@ -18,134 +16,127 @@ interface PillarCardProps {
 }
 
 const PillarCard: React.FC<PillarCardProps> = ({ icon, title, description }) => (
-  <div className="flex flex-col bg-white p-8 rounded-2xl border border-slate-200 text-center shadow-md h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-    <div className="inline-block p-4 bg-sky-100 rounded-full mb-6 border border-sky-200 mx-auto">
-      {/* Ikon dengan warna aksen yang lebih kuat & aksesibilitas */}
+  <div className="flex flex-col bg-white p-6 md:p-8 rounded-2xl border border-slate-200 text-center shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+    <div className="inline-flex items-center justify-center p-4 bg-sky-50 rounded-full mb-5 border border-sky-100 mx-auto">
       {React.cloneElement(icon, { "aria-hidden": true })}
     </div>
-    <h3 className="text-xl font-bold text-slate-800 mb-3">{title}</h3>
-    <p className="text-slate-600 leading-relaxed">{description}</p>
+    <h3 className="text-lg md:text-xl font-bold text-slate-800 mb-3">{title}</h3>
+    <p className="text-sm md:text-base text-slate-600 leading-relaxed">{description}</p>
   </div>
 );
 
-// --- Data Pilar dengan Ikon yang Telah Disesuaikan Warnanya ---
+// ====== Data for Pillars ======
 const PILLARS_DATA = [
   {
-    icon: <Award size={28} className="text-sky-500" />, // Warna disesuaikan
+    icon: <Award size={28} className="text-sky-500" />,
     title: 'Aset Terpilih',
-    description: 'Setiap properti telah melalui proses seleksi ketat untuk memastikan kualitas bangunan dan potensi pengembangan di masa depan.',
+    description: 'Properti yang dipilih melalui seleksi ketat untuk memastikan kualitas dan potensi nilai di masa depan.',
   },
   {
-    icon: <ShieldCheck size={28} className="text-sky-500" />, // Warna disesuaikan
+    icon: <ShieldCheck size={28} className="text-sky-500" />,
     title: 'Pengelolaan Profesional',
-    description: 'Mulai dari legalitas, pemasaran, hingga pemeliharaan, seluruh proses dikelola oleh tim yang berpengalaman.',
+    description: 'Dari legalitas, pemasaran, hingga perawatan—dikelola oleh tim berpengalaman.',
   },
   {
-    icon: <TrendingUp size={28} className="text-sky-500" />, // Warna disesuaikan
+    icon: <TrendingUp size={28} className="text-sky-500" />,
     title: 'Potensi Keuntungan',
-    description: 'Dengan lokasi strategis dan operasional yang tepat, setiap unit berpeluang menghasilkan pendapatan optimal.',
+    description: 'Lokasi strategis dengan peluang pendapatan optimal jika dikelola dengan baik.',
   },
 ];
 
-// Varian animasi Framer Motion
+// ====== Animation Variants ======
 const fadeInStagger = {
   initial: { opacity: 0 },
-  whileInView: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.2 } },
+  whileInView: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   viewport: { once: true, amount: 0.3 },
 };
 
-const fadeInAnimation = {
-  initial: { opacity: 0, y: 30 },
-  whileInView: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+const fadeInItem = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
-// Komponen About utama
+// ====== Main Component ======
 const About = React.memo(() => {
   return (
-    // --- PENYESUAIAN TEMA: Latar Belakang & Padding ---
-    // Menggunakan bg-slate-50 agar konsisten dengan VillaListings
-    <section id="about" className="relative scroll-mt-20 py-24 md:py-32 overflow-hidden bg-slate-50">
-      <div className="container relative z-10 mx-auto px-4">
-        {/* --- PENYESUAIAN TEMA: Judul & Tipografi --- */}
+    <section id="about" className="relative py-16 md:py-24 bg-slate-50 overflow-hidden">
+      <div className="container mx-auto px-4">
+        
+        {/* ===== Heading ===== */}
         <motion.div
-          className="max-w-3xl mx-auto text-center mb-16 md:mb-20"
+          className="max-w-2xl md:max-w-3xl mx-auto text-center mb-12 md:mb-16"
           variants={fadeInStagger}
           initial="initial"
           whileInView="whileInView"
         >
           <motion.span
-            variants={fadeInAnimation}
-            className="font-semibold text-sky-600 uppercase tracking-wider"
+            variants={fadeInItem}
+            className="font-semibold text-sky-600 uppercase tracking-wider text-sm md:text-base"
           >
-            Tentang Kami Haspro Villa
+            Tentang Kami
           </motion.span>
           <motion.h2
-            variants={fadeInAnimation}
-            // Mengadopsi gaya judul gradien dari VillaListings
-            className="text-4xl md:text-5xl font-extrabold my-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700"
+            variants={fadeInItem}
+            className="text-3xl md:text-5xl font-extrabold mt-3 mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700"
           >
-            Platform Listing <br></br> Villa Investasi
+            Platform Listing Villa Investasi
           </motion.h2>
           <motion.p
-            variants={fadeInAnimation}
-            // Menggunakan warna teks slate-600
-            className="text-lg text-slate-600 leading-relaxed"
+            variants={fadeInItem}
+            className="text-base md:text-lg text-slate-600 leading-relaxed"
           >
-            Haspro Villa menghadirkan pilihan properti bagi Anda yang mencari peluang investasi di sektor villa. Kami memadukan lokasi potensial, manajemen berpengalaman, dan proses transparan untuk investasi yang lebih nyaman dan terencana.
+            Haspro Villa menghadirkan properti pilihan untuk investasi strategis, 
+            dikelola dengan profesional dan transparan, demi kenyamanan dan hasil optimal.
           </motion.p>
         </motion.div>
 
-        {/* Pilar Investasi dengan Swiper */}
+        {/* ===== Swiper for Pillars ===== */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
         >
           <Swiper
             modules={[Pagination, A11y]}
             pagination={{ clickable: true }}
             grabCursor={true}
-            className="!pb-16"
-            slidesPerView={1.2}
-            spaceBetween={15}
+            className="!pb-12"
+            slidesPerView={1.05}
+            spaceBetween={12}
             centeredSlides={true}
             breakpoints={{
-              768: { slidesPerView: 2.5, spaceBetween: 30, centeredSlides: false },
-              1024: { slidesPerView: 3, spaceBetween: 30, centeredSlides: false },
+              640: { slidesPerView: 1.5, spaceBetween: 16 },
+              768: { slidesPerView: 2.5, spaceBetween: 24, centeredSlides: false },
+              1024: { slidesPerView: 3, spaceBetween: 28, centeredSlides: false },
             }}
           >
             {PILLARS_DATA.map((pillar) => (
-              <SwiperSlide key={pillar.title} className="h-auto pb-4">
-                <PillarCard
-                  icon={pillar.icon}
-                  title={pillar.title}
-                  description={pillar.description}
-                />
+              <SwiperSlide key={pillar.title} className="pb-4">
+                <PillarCard {...pillar} />
               </SwiperSlide>
             ))}
           </Swiper>
         </motion.div>
 
-        {/* --- PENYESUAIAN TEMA: Teks Disclaimer --- */}
-        <p className="text-xs text-slate-500 text-center mt-10 max-w-2xl mx-auto leading-relaxed">
-          <strong>Disclaimer:</strong> Informasi pada halaman ini disajikan untuk tujuan umum dan bukan merupakan janji keuntungan atau jaminan hasil investasi. Potensi pendapatan dapat berbeda-beda tergantung pada kondisi pasar, lokasi properti, dan faktor operasional lainnya.
+        {/* ===== Disclaimer ===== */}
+        <p className="text-xs text-slate-500 text-center mt-8 max-w-xl mx-auto leading-relaxed">
+          <strong>Disclaimer:</strong> Informasi ini bersifat umum, bukan jaminan keuntungan. 
+          Hasil investasi dapat bervariasi tergantung pasar, lokasi, dan faktor operasional.
         </p>
       </div>
 
-      {/* --- PENYESUAIAN TEMA: Pagination Swiper --- */}
+      {/* Swiper Custom Pagination Style */}
       <style>{`
         .swiper-pagination-bullet {
-          background-color: #e2e8f0; /* slate-200 */
-          width: 10px;
-          height: 10px;
-          transition: all 0.3s ease;
+          background-color: #cbd5e1;
           opacity: 1;
+          transition: all 0.3s ease;
         }
         .swiper-pagination-bullet-active {
-          background-color: #0ea5e9; /* sky-500 */
-          width: 24px;
-          border-radius: 5px;
+          background-color: #0ea5e9;
+          width: 20px;
+          border-radius: 6px;
         }
       `}</style>
     </section>
