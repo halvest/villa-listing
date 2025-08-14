@@ -1,9 +1,10 @@
+// src/pages/ListingsPage.tsx
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, ListFilter, ArrowLeft, X, RotateCcw } from 'lucide-react';
-import VillaCard from '../components/VillaCard'; // Pastikan path ini benar
-import Pagination from '../components/Pagination'; // Pastikan path ini benar
-import { supabase } from '../utils/supabase'; // Pastikan path ini benar
+import VillaCard from '../components/VillaCard';
+import Pagination from '../components/Pagination';
+import { supabase } from '../utils/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // ==== Tipe Data & Konstanta ====
@@ -13,11 +14,12 @@ interface Villa {
   nama_listing: string;
   alamat_lengkap: string;
   harga: number;
+  harga_promo?: number;
   status: 'Tersedia' | 'Promo' | 'Sold Out';
   foto_urls: string[];
   tipe_villa: string;
-  luas_bangunan?: number;
-  luas_tanah?: number;
+  memiliki_private_pool?: boolean;
+  perkiraan_passive_income?: number;
 }
 
 const ITEMS_PER_PAGE = 9;
@@ -38,7 +40,7 @@ const VillaCardSkeleton = () => (
     <div className="aspect-video bg-slate-200 rounded-lg mb-4"></div>
     <div className="h-5 bg-slate-200 rounded w-3/4 mb-2"></div>
     <div className="h-4 bg-slate-200 rounded w-1/2 mb-4"></div>
-    <div className="h-9 bg-slate-200 rounded w-full"></div>
+    <div className="h-10 bg-slate-200 rounded w-full"></div>
   </div>
 );
 
@@ -46,7 +48,7 @@ const VillaCardSkeleton = () => (
 interface FilterPanelProps {
   isOpen: boolean;
   onClose: () => void;
-  filters: { term: string; status: string; sort: string };
+  filters: { term: string; status: string; sort: string; pool: string; };
   onFilterChange: (key: keyof FilterPanelProps['filters'], value: string) => void;
   onReset: () => void;
   resultCount: number;
@@ -64,7 +66,7 @@ const FilterPanel: React.FC<FilterPanelProps> = React.memo(({ isOpen, onClose, f
           <motion.div
             initial={{ y: "100%" }} animate={{ y: "0%" }} exit={{ y: "100%" }}
             transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white w-full max-h-[85vh] rounded-t-2xl p-6 overflow-y-auto 
+            className="fixed bottom-0 left-0 right-0 z-50 bg-white w-full max-h-[90vh] rounded-t-2xl p-6 overflow-y-auto 
                        md:bottom-auto md:top-0 md:right-0 md:h-full md:max-w-sm md:rounded-t-none md:rounded-l-2xl"
             onClick={(e) => e.stopPropagation()}
           >
@@ -89,10 +91,20 @@ const FilterPanel: React.FC<FilterPanelProps> = React.memo(({ isOpen, onClose, f
                 </select>
               </div>
               <div>
+                <label className="block mb-1.5 text-sm font-medium text-slate-600">Fasilitas Unggulan</label>
+                <select value={filters.pool} onChange={(e) => onFilterChange('pool', e.target.value)}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+                  <option value="All">Semua</option><option value="Yes">Dengan Private Pool</option>
+                </select>
+              </div>
+              <div>
                 <label className="block mb-1.5 text-sm font-medium text-slate-600">Urutkan</label>
                 <select value={filters.sort} onChange={(e) => onFilterChange('sort', e.target.value)}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
-                  <option value="created_at-desc">Terbaru</option><option value="harga-asc">Harga Terendah</option><option value="harga-desc">Harga Tertinggi</option><option value="roi_perkiraan-desc">ROI Tertinggi</option>
+                  <option value="created_at-desc">Terbaru</option>
+                  <option value="perkiraan_passive_income-desc">Potensi Income Tertinggi</option>
+                  <option value="harga-asc">Harga Terendah</option>
+                  <option value="harga-desc">Harga Tertinggi</option>
                 </select>
               </div>
             </div>
@@ -115,7 +127,9 @@ export default function ListingsPage() {
     term: searchParams.get('search') || '',
     status: searchParams.get('status') || 'All',
     sort: searchParams.get('sort') || 'created_at-desc',
+    pool: searchParams.get('pool') || 'All',
   });
+
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1', 10));
   const [villas, setVillas] = useState<Villa[]>([]);
   const [totalVillas, setTotalVillas] = useState(0);
@@ -142,9 +156,12 @@ export default function ListingsPage() {
       if (filters.status !== 'All') {
         query = query.eq('status', filters.status);
       }
+      if (filters.pool === 'Yes') {
+        query = query.eq('memiliki_private_pool', true);
+      }
       
       query = query
-        .order(sortField, { ascending: sortOrder === 'asc' })
+        .order(sortField, { ascending: sortOrder === 'asc', nullsFirst: false })
         .range(from, to);
 
       try {
@@ -163,17 +180,17 @@ export default function ListingsPage() {
     };
 
     fetchVillas();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, debouncedSearchTerm, filters.status, filters.sort]);
+  }, [currentPage, debouncedSearchTerm, filters.status, filters.sort, filters.pool]);
   
   useEffect(() => {
     const newParams = new URLSearchParams();
     if (debouncedSearchTerm) newParams.set('search', debouncedSearchTerm);
     if (filters.status !== 'All') newParams.set('status', filters.status);
+    if (filters.pool !== 'All') newParams.set('pool', filters.pool);
     if (filters.sort !== 'created_at-desc') newParams.set('sort', filters.sort);
     if (currentPage > 1) newParams.set('page', currentPage.toString());
     setSearchParams(newParams);
-  }, [debouncedSearchTerm, filters.status, filters.sort, currentPage, setSearchParams]);
+  }, [debouncedSearchTerm, filters.status, filters.pool, filters.sort, currentPage, setSearchParams]);
   
   const handleFilterChange = useCallback((key: keyof typeof filters, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -181,12 +198,12 @@ export default function ListingsPage() {
   }, []);
 
   const handleResetFilters = useCallback(() => {
-    setFilters({ term: '', status: 'All', sort: 'created_at-desc' });
+    setFilters({ term: '', status: 'All', sort: 'created_at-desc', pool: 'All' });
     setCurrentPage(1);
   }, []);
 
   const isFilterActive = useMemo(() => 
-    filters.term !== '' || filters.status !== 'All' || filters.sort !== 'created_at-desc',
+    filters.term !== '' || filters.status !== 'All' || filters.sort !== 'created_at-desc' || filters.pool !== 'All',
     [filters]
   );
 
@@ -195,7 +212,6 @@ export default function ListingsPage() {
       <section id="listings" className="py-16 md:py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           
-          {/* ✨ JARAK DIPERBAIKI PADA BLOK INI */}
           <div className="text-center max-w-3xl mx-auto mb-8 md:mb-12">
             <div className="mb-4 md:mb-6">
               <Link to="/" className="inline-flex items-center gap-2 text-sky-600 hover:text-sky-800 transition-colors text-sm font-semibold">
@@ -203,7 +219,7 @@ export default function ListingsPage() {
               </Link>
             </div>
             <h2 className="text-3xl md:text-5xl font-extrabold mb-3 md:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-              Temukan Investasi Anda
+              Temukan Peluang Investasi Anda
             </h2>
             <p className="text-base md:text-lg text-slate-600">
               Jelajahi pilihan properti yang telah kami kurasi, dirancang untuk memberikan keuntungan dan ketenangan pikiran.
@@ -213,11 +229,11 @@ export default function ListingsPage() {
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <p className="text-slate-600 text-sm md:text-base w-full order-2 md:order-1 text-center md:text-left">
               {loading ? <span className="inline-block h-5 w-48 bg-slate-200 rounded-md animate-pulse"></span> :
-                totalVillas > 0 ? `Menampilkan ${(currentPage - 1) * ITEMS_PER_PAGE + 1}-${(currentPage - 1) * ITEMS_PER_PAGE + villas.length} dari ${totalVillas} properti` : 'Tidak ada properti yang ditemukan.'
+                totalVillas > 0 ? `Menampilkan ${villas.length} dari ${totalVillas} properti investasi.` : 'Tidak ada properti yang ditemukan.'
               }
             </p>
             <button onClick={() => setShowFilters(true)} className="relative w-full md:w-auto flex-shrink-0 flex items-center justify-center gap-2 px-5 py-3 bg-white border border-slate-300 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 shadow-sm order-1 md:order-2">
-              <ListFilter size={18} /> Filter & Cari
+              <ListFilter size={18} /> Filter & Urutkan
               {isFilterActive && <div className="absolute -top-1 -right-1 w-3 h-3 bg-sky-500 rounded-full border-2 border-white"></div>}
             </button>
           </div>

@@ -77,7 +77,7 @@ export default function Hero({ onSectionChange }: HeroProps) {
           <BackgroundImage
             key={currentImageIndex}
             src={heroImages[currentImageIndex]}
-            alt="Pemandangan villa Haspro di Yogyakarta"
+            alt="Investasi villa di Yogyakarta"
           />
         </AnimatePresence>
       )}
@@ -103,7 +103,7 @@ export default function Hero({ onSectionChange }: HeroProps) {
             </span>
           </h1>
           <p className="text-lg md:text-xl max-w-2xl mx-auto text-slate-300 mb-10">
-            Aset properti di destinasi terbaik, dikelola profesional, dengan legalitas terjamin dan potensi ROI yang terukur.
+            Miliki aset villa investasi dilokasi strategis Yogyakarta, dikelola profesional, dengan legalitas hak pakai selama 20 tahun dan jaminan balik modal dalam 5 tahun.
           </p>
         </motion.div>
 

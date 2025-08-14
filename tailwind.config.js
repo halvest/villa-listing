@@ -3,20 +3,33 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
-      // Menambahkan definisi untuk animasi custom
       animation: {
-        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'kenburns': 'kenburns-top-right 20s ease-in-out infinite alternate',
+        'fade-in': 'fade-in 0.8s ease-in forwards',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+        'kenburns-top-right': {
+          '0%': {
+            transform: 'scale(1) translate(0, 0)',
+            'transform-origin': '84% 16%',
+          },
+          '50%': {
+            transform: 'scale(1.1) translate(5px, -3px)',
+            'transform-origin': 'right top',
+          },
+          '100%': {
+            transform: 'scale(1.15) translate(10px, -5px)',
+            'transform-origin': 'right top',
+          },
+        },
+        'fade-in': {
+          'from': { opacity: '0' },
+          'to': { opacity: '1' },
         },
       },
     },
   },
   plugins: [
-    // Menambahkan plugin untuk text-shadow
     require('tailwindcss-textshadow'),
   ],
 };

@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const slugify = (text: string) => text?.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, '') || '';
 
-// --- Tipe Data & Opsi ---
+// --- Tipe Data Diperbarui ---
 type FormFields = {
   id?: string;
   created_at?: string;
@@ -16,11 +16,12 @@ type FormFields = {
   deskripsi_singkat: string;
   deskripsi_panjang?: string;
   harga: number;
+  harga_promo?: number; // Ditambahkan
+  perkiraan_passive_income?: number; 
+  memiliki_private_pool: boolean; 
   roi_perkiraan?: number;
   alamat_lengkap: string;
   tipe_villa: '1BR' | '2BR' | '3BR' | 'Investasi';
-  luas_bangunan?: number;
-  luas_tanah?: number;
   fasilitas: string[];
   foto_urls: string[];
   video_tour_url?: string;
@@ -42,12 +43,12 @@ const TIPE_OPTIONS: FormFields['tipe_villa'][] = ['1BR', '2BR', '3BR', 'Investas
 
 // --- Sub-Komponen ---
 const FormInput = ({ label, name, register, validation = {}, ...props }: any) => (
-  <div>
-    <label className="font-semibold text-sm text-slate-700 block mb-1.5">{label}</label>
-    <input {...register(name, validation)} className="w-full p-3 bg-slate-100 border-slate-200 border rounded-lg focus:ring-2 focus:ring-sky-500" {...props} />
-    {props.error && <p className="text-sm text-red-500 mt-1">{props.error.message || 'Isian ini wajib diisi.'}</p>}
-  </div>
-);
+    <div>
+      <label className="font-semibold text-sm text-slate-700 block mb-1.5">{label}</label>
+      <input {...register(name, validation)} className="w-full p-3 bg-slate-100 border-slate-200 border rounded-lg focus:ring-2 focus:ring-sky-500" {...props} />
+      {props.error && <p className="text-sm text-red-500 mt-1">{props.error.message || 'Isian ini wajib diisi.'}</p>}
+    </div>
+  );
 const FormTextarea = ({ label, name, register, validation = {}, ...props }: any) => (
   <div>
     <label className="font-semibold text-sm text-slate-700 block mb-1.5">{label}</label>
@@ -79,7 +80,7 @@ export default function VillaFormModal({ villa, onClose, onSave }: VillaFormModa
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
 
   const { register, handleSubmit, setValue, getValues, control, watch, formState: { errors }, trigger } = useForm<FormFields>({
-    defaultValues: villa || { status: 'Tersedia', tipe_villa: '1BR', fasilitas: [], foto_urls: [] },
+    defaultValues: villa || { status: 'Tersedia', tipe_villa: '1BR', fasilitas: [], foto_urls: [], memiliki_private_pool: false },
     mode: 'onChange'
   });
 
@@ -195,17 +196,23 @@ export default function VillaFormModal({ villa, onClose, onSave }: VillaFormModa
                 <div className="space-y-4">
                   <h3 className="text-xl font-bold text-slate-700 mb-4">Detail Listing & Harga</h3>
                   <div className="grid grid-cols-2 gap-4">
-                    <FormInput label="Harga" name="harga" type="number" register={register} validation={{ required: true, min: 1 }} error={errors.harga} />
-                    <FormInput label="ROI Perkiraan (%)" name="roi_perkiraan" type="number" register={register} />
+                    <FormInput label="Harga Normal" name="harga" type="number" register={register} validation={{ required: true, min: 1 }} error={errors.harga} />
+                    <FormInput label="Harga Promo (Opsional)" name="harga_promo" type="number" register={register} />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <FormInput label="Luas Bangunan (m²)" name="luas_bangunan" type="number" register={register} />
-                    <FormInput label="Luas Tanah (m²)" name="luas_tanah" type="number" register={register} />
+                    <FormInput label="Perkiraan Passive Income / Bulan" name="perkiraan_passive_income" type="number" register={register} />
+                    <FormInput label="ROI Perkiraan (%)" name="roi_perkiraan" type="number" register={register} />
                   </div>
                    <div className="grid grid-cols-2 gap-4">
                     <FormInput label="Jaminan BEP" name="jaminan_bep" register={register} placeholder="Contoh: 5 Tahun"/>
                     <FormInput label="Free Stay" name="free_stay" register={register} placeholder="Contoh: 12x per Tahun"/>
                   </div>
+                   <div className="pt-4">
+                        <input id="private-pool" type="checkbox" {...register("memiliki_private_pool")} className="h-5 w-5 rounded border-gray-300 text-sky-600 focus:ring-sky-500" />
+                        <label htmlFor="private-pool" className="ml-2 text-sm font-semibold text-slate-700">
+                            Memiliki Private Pool
+                        </label>
+                    </div>
                 </div>
               )}
 

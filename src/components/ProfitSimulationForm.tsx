@@ -29,7 +29,7 @@ export default function ProfitSimulationForm() {
       const { data, error } = await supabase
         .from('villa_listings')
         .select('id, nama_listing')
-        .in('status', ['Tersedia', 'Promo']); // Hanya tampilkan villa yang bisa dibeli
+        .in('status', ['Tersedia', 'Promo']);
       
       if (error) console.error("Error fetching villa options:", error);
       else setVillas(data as VillaOption[]);
@@ -53,7 +53,7 @@ export default function ProfitSimulationForm() {
       setIsSubmitting(false);
     } else {
       setIsSuccess(true);
-      reset(); // Mengosongkan form setelah berhasil
+      reset();
     }
   };
 
@@ -77,8 +77,9 @@ export default function ProfitSimulationForm() {
               >
                 <CheckCircle className="w-20 h-20 text-green-500 mb-4" />
                 <h3 className="text-2xl font-bold text-slate-800">Permintaan Terkirim!</h3>
-                <p className="text-slate-600 mt-2">
-                  Terima kasih. Tim kami akan segera menghubungi Anda melalui WhatsApp dengan simulasi profit yang diminta.
+                <p className="text-slate-600 mt-2 max-w-md">
+                  Terima kasih telah mempercayakan perencanaan investasi Anda kepada kami.
+                  Tim kami akan segera menghubungi Anda via WhatsApp.
                 </p>
               </motion.div>
             ) : (
@@ -88,12 +89,14 @@ export default function ProfitSimulationForm() {
                 className="p-8 md:p-12 space-y-6"
               >
                 <div className="text-center">
-                    <div className="mx-auto w-14 h-14 bg-sky-100 text-sky-600 flex items-center justify-center rounded-full mb-4">
-                        <Calculator size={28} />
-                    </div>
-                  <h2 className="text-3xl font-extrabold text-slate-800">Kalkulasi Potensi Profit Anda</h2>
-                  <p className="text-slate-500 mt-2">
-                    Isi data di bawah, dan tim kami akan mengirimkan simulasi keuntungan lengkap untuk villa pilihan Anda via WhatsApp.
+                  <div className="mx-auto w-14 h-14 bg-sky-100 text-sky-600 flex items-center justify-center rounded-full mb-4">
+                    <Calculator size={28} />
+                  </div>
+                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-5 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
+                    Dapatkan Info Lengkap & Simulasi Profit
+                  </h2>
+                  <p className="text-slate-500 mt-2 max-w-md mx-auto">
+                    Isi formulir di bawah untuk mendapatkan informasi lengkap & proyeksi pendapatan pasif dari villa pilihan Anda
                   </p>
                 </div>
                 
@@ -131,10 +134,10 @@ export default function ProfitSimulationForm() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-slate-800 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-slate-700 transition-all flex items-center justify-center gap-2 text-base disabled:bg-slate-400"
+                  className="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-sky-700 transition-all flex items-center justify-center gap-2 text-base disabled:bg-slate-400"
                 >
                   {isSubmitting ? <Loader className="animate-spin" /> : <Send />}
-                  {isSubmitting ? 'Mengirim...' : 'Kirim & Dapatkan Simulasi'}
+                  {isSubmitting ? 'Mengirim...' : 'Dapatkan Info Lengkap'}
                 </button>
               </motion.form>
             )}

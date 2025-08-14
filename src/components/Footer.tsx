@@ -17,7 +17,7 @@ export default function Footer() {
   // Sesuaikan dengan section ID yang ada di LandingPage
   const footerLinks = [
     { title: 'Beranda', id: 'home' },
-    { title: 'Keunggulan', id: 'about' },
+    { title: 'Tentang Kami', id: 'about' },
     { title: 'Pilihan Villa', id: 'listings' },
     { title: 'Simulasi Profit', id: 'contact' },
     { title: 'FAQ', id: 'faq' },
