@@ -53,54 +53,62 @@ export default function ProfitSimulationForm() {
       setIsSubmitting(false);
     } else {
       setIsSuccess(true);
-      reset();
+      // Opsi: reset form setelah beberapa detik agar pengguna sempat melihat pesan sukses lebih lama
+      // setTimeout(() => {
+      //   reset();
+      //   setIsSuccess(false); // kembali ke form jika diinginkan
+      // }, 5000);
     }
   };
 
   return (
-    <section id="profit-simulation" className="py-24 bg-slate-50 scroll-mt-20">
+    // ID diubah menjadi 'contact' agar konsisten dengan ref di LandingPage.tsx
+    <section id="contact" className="py-24 bg-slate-50 scroll-mt-20">
       <div className="container mx-auto px-4">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5 }}
-          className="bg-white rounded-2xl shadow-2xl max-w-2xl mx-auto"
+          className="bg-white rounded-2xl shadow-2xl max-w-2xl mx-auto overflow-hidden"
         >
           <AnimatePresence mode="wait">
             {isSuccess ? (
               <motion.div
                 key="success"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-center p-12 flex flex-col justify-center items-center h-[550px]"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="text-center p-12 flex flex-col justify-center items-center min-h-[550px]"
               >
                 <CheckCircle className="w-20 h-20 text-green-500 mb-4" />
-                <h3 className="text-2xl font-bold text-slate-800">Permintaan Terkirim!</h3>
+                <h3 className="text-2xl font-bold text-slate-800">Simulasi Profit Segera Dikirim!</h3>
                 <p className="text-slate-600 mt-2 max-w-md">
-                  Terima kasih telah mempercayakan perencanaan investasi Anda kepada kami.
-                  Tim kami akan segera menghubungi Anda via WhatsApp.
+                  Terima kasih! Tim konsultan <strong>investasi properti</strong> kami akan segera menghubungi Anda via WhatsApp dengan rincian lengkap untuk <strong>villa pilihan Anda</strong>.
                 </p>
               </motion.div>
             ) : (
               <motion.form
                 key="form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 onSubmit={handleSubmit(onSubmit)} 
-                className="p-8 md:p-12 space-y-6"
+                className="p-8 md:p-12"
               >
-                <div className="text-center">
+                <div className="text-center mb-6">
                   <div className="mx-auto w-14 h-14 bg-sky-100 text-sky-600 flex items-center justify-center rounded-full mb-4">
                     <Calculator size={28} />
                   </div>
-                  <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-5 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-                    Dapatkan Info Lengkap & Simulasi Profit
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900">
+                    Hitung Potensi Investasi Villa Anda di Jogja
                   </h2>
-                  <p className="text-slate-500 mt-2 max-w-md mx-auto">
-                    Isi formulir di bawah untuk mendapatkan informasi lengkap & proyeksi pendapatan pasif dari villa pilihan Anda
+                  <p className="text-slate-500 mt-3 max-w-lg mx-auto">
+                    Dapatkan simulasi profit, rincian biaya, dan proyeksi <em>passive income</em> untuk <strong>investasi villa di Yogyakarta</strong>. Tim konsultan kami akan mengirimkannya langsung ke WhatsApp Anda.
                   </p>
                 </div>
                 
-                <div className="space-y-4 pt-4 border-t">
+                <div className="space-y-4 pt-6 border-t">
                   <div>
                     <label htmlFor="nama" className="font-semibold text-sm text-slate-700">Nama Lengkap</label>
                     <input id="nama" type="text" {...register("nama", { required: "Nama wajib diisi" })} className="w-full mt-1 p-3 bg-slate-100 border-slate-200 border rounded-lg focus:ring-2 focus:ring-sky-500" />
@@ -134,10 +142,10 @@ export default function ProfitSimulationForm() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-sky-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-sky-700 transition-all flex items-center justify-center gap-2 text-base disabled:bg-slate-400"
+                  className="w-full mt-6 bg-sky-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-sky-700 transition-all flex items-center justify-center gap-2 text-base disabled:bg-slate-400"
                 >
                   {isSubmitting ? <Loader className="animate-spin" /> : <Send />}
-                  {isSubmitting ? 'Mengirim...' : 'Dapatkan Info Lengkap'}
+                  {isSubmitting ? 'Mengirim...' : 'Dapatkan Simulasi Profit'}
                 </button>
               </motion.form>
             )}

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Search, ListFilter, ArrowLeft, X, RotateCcw } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import VillaCard from '../components/VillaCard';
 import Pagination from '../components/Pagination';
 import { supabase } from '../utils/supabase';
@@ -21,7 +22,6 @@ interface Villa {
   memiliki_private_pool?: boolean;
   perkiraan_passive_income?: number;
 }
-
 const ITEMS_PER_PAGE = 9;
 
 // ==== Hook Debounce ====
@@ -44,7 +44,7 @@ const VillaCardSkeleton = () => (
   </div>
 );
 
-// ==== Komponen Filter Panel ====
+// ==== Komponen Filter Panel (DENGAN PERBAIKAN) ====
 interface FilterPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -53,89 +53,112 @@ interface FilterPanelProps {
   onReset: () => void;
   resultCount: number;
 }
-
 const FilterPanel: React.FC<FilterPanelProps> = React.memo(({ isOpen, onClose, filters, onFilterChange, onReset, resultCount }) => {
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-          onClick={onClose}
-        >
-          <motion.div
-            initial={{ y: "100%" }} animate={{ y: "0%" }} exit={{ y: "100%" }}
-            transition={{ type: 'spring', stiffness: 400, damping: 40 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white w-full max-h-[90vh] rounded-t-2xl p-6 overflow-y-auto 
-                       md:bottom-auto md:top-0 md:right-0 md:h-full md:max-w-sm md:rounded-t-none md:rounded-l-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-slate-800">Filter & Urutkan</h3>
-              <button onClick={onClose} className="p-2 rounded-full text-slate-500 hover:bg-slate-100"><X size={24} /></button>
-            </div>
-            <div className="space-y-6 pb-24 md:pb-6">
-              <div>
-                <label className="block mb-1.5 text-sm font-medium text-slate-600">Cari Villa</label>
-                <div className="relative">
-                  <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text" placeholder="Nama villa atau lokasi..." value={filters.term} onChange={(e) => onFilterChange('term', e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:bg-white" />
+    return (
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* --- Overlay untuk Desktop (tetap seperti semula) --- */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden md:block"
+              onClick={onClose}
+            />
+
+            {/* --- Wrapper untuk Mobile & Panel untuk Desktop --- */}
+            <motion.div
+              // Animasi untuk mobile (muncul dari bawah bersama overlay)
+              initial={{ y: "100%" }}
+              animate={{ y: "0%" }}
+              exit={{ y: "100%" }}
+              transition={{ type: 'spring', stiffness: 400, damping: 40 }}
+              // Animasi untuk desktop (muncul dari kanan)
+              variants={{
+                initial: { x: "100%" },
+                animate: { x: "0%" },
+                exit: { x: "100%" },
+              }}
+              // Terapkan varian berdasarkan breakpoint
+              className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-0 md:h-full"
+              // Tambahkan overlay hitam di DALAM wrapper ini untuk mobile
+              // dan posisikan panel putih di atasnya
+            >
+              <div 
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm md:hidden"
+                onClick={onClose}
+              ></div>
+              <div
+                className="relative z-10 bg-white w-full max-h-[90vh] rounded-t-2xl p-6 overflow-y-auto 
+                           md:absolute md:right-0 md:h-full md:max-w-sm md:rounded-t-none md:rounded-l-2xl"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-slate-800">Filter & Urutkan</h3>
+                  <button onClick={onClose} className="p-2 rounded-full text-slate-500 hover:bg-slate-100"><X size={24} /></button>
+                </div>
+                <div className="space-y-6 pb-24 md:pb-6">
+                  {/* ... Isi form filter tetap sama ... */}
+                  <div>
+                    <label className="block mb-1.5 text-sm font-medium text-slate-600">Cari Villa</label>
+                    <div className="relative">
+                      <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input type="text" placeholder="Nama villa atau lokasi..." value={filters.term} onChange={(e) => onFilterChange('term', e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:bg-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block mb-1.5 text-sm font-medium text-slate-600">Status</label>
+                    <select value={filters.status} onChange={(e) => onFilterChange('status', e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+                      <option value="All">Semua Status</option><option value="Tersedia">Tersedia</option><option value="Promo">Promo</option><option value="Sold Out">Sold Out</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block mb-1.5 text-sm font-medium text-slate-600">Fasilitas Unggulan</label>
+                    <select value={filters.pool} onChange={(e) => onFilterChange('pool', e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+                      <option value="All">Semua</option><option value="Yes">Dengan Private Pool</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block mb-1.5 text-sm font-medium text-slate-600">Urutkan</label>
+                    <select value={filters.sort} onChange={(e) => onFilterChange('sort', e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
+                      <option value="created_at-desc">Terbaru</option>
+                      <option value="perkiraan_passive_income-desc">Potensi Income Tertinggi</option>
+                      <option value="harga-asc">Harga Terendah</option>
+                      <option value="harga-desc">Harga Tertinggi</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-slate-200 flex gap-3">
+                  <button onClick={onReset} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-700 font-semibold hover:bg-slate-100"><RotateCcw size={16} /> Reset</button>
+                  <button onClick={onClose} className="flex-[2] px-4 py-3 bg-sky-500 text-white font-bold rounded-lg hover:bg-sky-600">Tampilkan ({resultCount}) Villa</button>
                 </div>
               </div>
-              <div>
-                <label className="block mb-1.5 text-sm font-medium text-slate-600">Status</label>
-                <select value={filters.status} onChange={(e) => onFilterChange('status', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
-                  <option value="All">Semua Status</option><option value="Tersedia">Tersedia</option><option value="Promo">Promo</option><option value="Sold Out">Sold Out</option>
-                </select>
-              </div>
-              <div>
-                <label className="block mb-1.5 text-sm font-medium text-slate-600">Fasilitas Unggulan</label>
-                <select value={filters.pool} onChange={(e) => onFilterChange('pool', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
-                  <option value="All">Semua</option><option value="Yes">Dengan Private Pool</option>
-                </select>
-              </div>
-              <div>
-                <label className="block mb-1.5 text-sm font-medium text-slate-600">Urutkan</label>
-                <select value={filters.sort} onChange={(e) => onFilterChange('sort', e.target.value)}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500">
-                  <option value="created_at-desc">Terbaru</option>
-                  <option value="perkiraan_passive_income-desc">Potensi Income Tertinggi</option>
-                  <option value="harga-asc">Harga Terendah</option>
-                  <option value="harga-desc">Harga Tertinggi</option>
-                </select>
-              </div>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-slate-200 flex gap-3">
-              <button onClick={onReset} className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-700 font-semibold hover:bg-slate-100"><RotateCcw size={16} /> Reset</button>
-              <button onClick={onClose} className="flex-[2] px-4 py-3 bg-sky-500 text-white font-bold rounded-lg hover:bg-sky-600">Tampilkan ({resultCount}) Villa</button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    );
 });
 
-// ==== Komponen Utama Halaman ====
+// ==== Komponen Utama Halaman (TIDAK ADA PERUBAHAN) ====
 export default function ListingsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const [filters, setFilters] = useState({
     term: searchParams.get('search') || '',
     status: searchParams.get('status') || 'All',
     sort: searchParams.get('sort') || 'created_at-desc',
     pool: searchParams.get('pool') || 'All',
   });
-
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1', 10));
   const [villas, setVillas] = useState<Villa[]>([]);
   const [totalVillas, setTotalVillas] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  
   const debouncedSearchTerm = useDebounce(filters.term, 500);
 
   useEffect(() => {
@@ -178,7 +201,6 @@ export default function ListingsPage() {
         setLoading(false);
       }
     };
-
     fetchVillas();
   }, [currentPage, debouncedSearchTerm, filters.status, filters.sort, filters.pool]);
   
@@ -208,7 +230,16 @@ export default function ListingsPage() {
   );
 
   return (
-    <div className="pt-20">
+    <div className="pt-20 bg-slate-50">
+      <Helmet>
+        <title>Daftar Villa Investasi di Yogyakarta | Unit Tersedia & Promo Terbaru</title>
+        <meta 
+          name="description" 
+          content="Cari dan filter semua unit villa untuk investasi di Jogja. Temukan properti dengan private pool, urutkan berdasarkan harga atau potensi income. Peluang investasi Anda menanti!" 
+        />
+        <link rel="canonical" href="https://URL-WEBSITE-ANDA.com/listings" />
+      </Helmet>
+      
       <section id="listings" className="py-16 md:py-24 bg-slate-50">
         <div className="container mx-auto px-4">
           
@@ -219,10 +250,10 @@ export default function ListingsPage() {
               </Link>
             </div>
             <h2 className="text-3xl md:text-5xl font-extrabold mb-3 md:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-              Temukan Peluang Investasi Anda
+              Listing Villa di Yogyakarta
             </h2>
             <p className="text-base md:text-lg text-slate-600">
-              Jelajahi pilihan properti yang telah kami kurasi, dirancang untuk memberikan keuntungan dan ketenangan pikiran.
+              Gunakan filter untuk mencari properti villa idaman Anda di Jogja. Urutkan berdasarkan harga, potensi keuntungan, atau status terbaru.
             </p>
           </div>
 

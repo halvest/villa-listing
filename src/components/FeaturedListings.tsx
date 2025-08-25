@@ -37,7 +37,6 @@ export default function FeaturedListings() {
     const fetchFeaturedVillas = async () => {
       setLoading(true);
       try {
-        // ✨ Pastikan query mengambil semua kolom yang dibutuhkan VillaCard
         const { data, error } = await supabase
           .from('villa_listings')
           .select('id, slug, nama_listing, alamat_lengkap, harga, harga_promo, status, foto_urls, tipe_villa, memiliki_private_pool, perkiraan_passive_income')
@@ -61,10 +60,10 @@ export default function FeaturedListings() {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <h2 className="text-3xl md:text-5xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-            Pilih Unit Villa Investasi Anda Sekarang Juga!
+            Villa Unggulan untuk Investasi Anda
           </h2>
           <p className="text-base md:text-lg text-slate-600 leading-relaxed">
-            Temukan Unit Villa Investasi Anda.
+            Berikut adalah pilihan <strong>properti villa</strong> terbaik yang tersedia saat ini. Setiap unit telah kami pilih berdasarkan <strong>lokasi strategis</strong>, desain premium, dan <strong>potensi keuntungan</strong> yang menjanjikan sebagai aset <strong>investasi villa</strong> Anda di Yogyakarta.
           </p>
         </div>
 
@@ -79,7 +78,7 @@ export default function FeaturedListings() {
             to="/listings"
             className="inline-flex items-center gap-2 px-8 py-3 bg-sky-600 text-white font-semibold rounded-lg shadow-lg shadow-sky-500/30 hover:bg-sky-700 focus:ring-4 focus:ring-sky-300 transition-transform transform hover:scale-105"
           >
-            Lihat Semua <ArrowRight size={18} />
+            Lihat Semua Unit Villa <ArrowRight size={18} />
           </Link>
         </div>
       </div>

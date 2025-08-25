@@ -3,13 +3,19 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Import gambar lokal
+// Import gambar lokal dan buat struktur data yang lebih baik untuk SEO
 import heroImage1 from '../assets/images/gate-lodjisvarga-seturan.jpg';
 import heroImage2 from '../assets/images/lodjisvarga-seturan.jpg';
 import heroImage3 from '../assets/images/valeeqa-villa.jpg';
 import heroImage4 from '../assets/images/valeqaa-villa-row.jpg';
 
-const heroImages = [heroImage1, heroImage2, heroImage3, heroImage4];
+// Mengubah array gambar menjadi array objek untuk alt text yang dinamis
+const heroData = [
+  { src: heroImage1, alt: 'Gerbang utama Lodjisvarga Seturan, pilihan investasi villa di Yogyakarta.' },
+  { src: heroImage2, alt: 'Tampak depan villa Lodjisvarga Seturan dengan kolam renang pribadi.' },
+  { src: heroImage3, alt: 'Valeeqa Villa, alternatif investasi properti premium di Jogja.' },
+  { src: heroImage4, alt: 'Deretan unit Valeeqa Villa, cocok untuk investasi jangka panjang.' },
+];
 
 interface HeroProps {
   onSectionChange: (section: string) => void;
@@ -34,15 +40,11 @@ export default function Hero({ onSectionChange }: HeroProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFirstLoaded, setIsFirstLoaded] = useState(false);
 
-  // Preload semua gambar saat komponen mount
   useEffect(() => {
-    let loadedCount = 0;
-    heroImages.forEach((src, idx) => {
+    heroData.forEach((item, idx) => {
       const img = new Image();
-      img.src = src;
+      img.src = item.src;
       img.onload = () => {
-        loadedCount++;
-        // Kalau gambar pertama sudah load, tampilkan hero
         if (idx === 0) {
           setIsFirstLoaded(true);
         }
@@ -50,11 +52,10 @@ export default function Hero({ onSectionChange }: HeroProps) {
     });
   }, []);
 
-  // Slideshow otomatis
   useEffect(() => {
     if (!isFirstLoaded) return;
     const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+      setCurrentImageIndex((prev) => (prev + 1) % heroData.length);
     }, 7000);
     return () => clearInterval(timer);
   }, [isFirstLoaded]);
@@ -71,21 +72,18 @@ export default function Hero({ onSectionChange }: HeroProps) {
       id="home"
       className="relative min-h-[90vh] sm:min-h-screen w-full flex items-center justify-center text-white overflow-hidden"
     >
-      {/* Background hanya muncul jika gambar pertama sudah load */}
       {isFirstLoaded && (
         <AnimatePresence mode="wait">
           <BackgroundImage
             key={currentImageIndex}
-            src={heroImages[currentImageIndex]}
-            alt="Investasi villa di Yogyakarta"
+            src={heroData[currentImageIndex].src}
+            alt={heroData[currentImageIndex].alt}
           />
         </AnimatePresence>
       )}
 
-      {/* Overlay gradasi */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/20 z-10"></div>
 
-      {/* Konten */}
       <div className="relative z-20 flex flex-col items-center text-center px-4 w-full">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -97,17 +95,17 @@ export default function Hero({ onSectionChange }: HeroProps) {
             Investasi Villa Premium di Yogyakarta
           </span>
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter my-4 text-white">
-            Miliki Aset Produktif, <br />
+            Investasi Villa di Jogja: Aset Produktif,
+            <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-sky-500 drop-shadow-lg">
-              Nikmati Kebebasan Finansial.
+              Raih Kebebasan Finansial Anda.
             </span>
           </h1>
           <p className="text-lg md:text-xl max-w-2xl mx-auto text-slate-300 mb-10">
-            Miliki aset villa investasi dilokasi strategis Yogyakarta, dikelola profesional, dengan legalitas hak pakai selama 20 tahun dan jaminan balik modal dalam 5 tahun.
+            Wujudkan impian memiliki <strong>properti villa</strong> di lokasi strategis Yogyakarta. Sebuah <strong>bentuk investasi jangka panjang</strong> yang dikelola secara profesional, dengan legalitas aman dan potensi keuntungan menjanjikan.
           </p>
         </motion.div>
 
-        {/* Tombol aksi */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,7 +116,7 @@ export default function Hero({ onSectionChange }: HeroProps) {
             onClick={() => onSectionChange('listings')}
             className="group font-semibold py-3 px-8 rounded-full shadow-lg flex items-center justify-center gap-2 text-white bg-sky-600 border-2 border-sky-600 hover:bg-sky-500 hover:border-sky-500 transition-all duration-300 transform hover:scale-105"
           >
-            <span>Lihat Properti</span>
+            <span>Lihat Unit Tersedia</span>
             <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
           </button>
           <button

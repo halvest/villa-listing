@@ -3,23 +3,35 @@ import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Data FAQ — copywriting sudah dipoles
+// Data FAQ — Diperbanyak dan dioptimalkan dengan keyword SEO
 const faqData = [
   {
-    question: 'Apa legalitas villa ini?',
-    answer: 'Setiap villa dilindungi dengan Perjanjian Hak Pakai selama 20 tahun yang dibuat dan disahkan di hadapan notaris resmi. Hal ini memastikan kepastian hukum penuh dan rasa aman bagi investasi Anda.'
+    question: 'Apa bentuk legalitas dari investasi villa ini?',
+    answer: 'Setiap unit dilindungi oleh Perjanjian Hak Pakai selama 20 tahun yang sah di hadapan notaris. Ini adalah bentuk investasi properti jangka panjang yang memberikan Anda kepastian hukum penuh atas aset properti villa Anda.'
   },
   {
-    question: 'Siapa yang akan mengelola villa saya?',
-    answer: 'Tim manajemen properti profesional kami menangani semua aspek operasional: pemasaran, reservasi, check-in/check-out, kebersihan, dan perawatan. Anda tinggal menerima laporan dan hasilnya—tanpa repot sama sekali.'
+    question: 'Bagaimana perhitungan potensi keuntungan (ROI) dari investasi villa ini?',
+    answer: 'Potensi keuntungan didapat dari pendapatan sewa harian yang dikelola tim kami. Setelah dikurangi biaya operasional, keuntungan akan didistribusikan kepada Anda. Proyeksi ROI detail akan kami presentasikan, menunjukkan bagaimana villa Jogja ini bisa menjadi sumber passive income yang solid.'
   },
   {
-    question: 'Apakah saya bisa memakai villa untuk pribadi?',
-    answer: 'Ya, Anda mendapat jatah penggunaan pribadi beberapa hari per tahun. Detail jadwal dan ketentuan penggunaan akan dijelaskan jelas dalam kontrak investasi.'
+    question: 'Siapa yang akan mengelola properti villa saya sehari-hari?',
+    answer: 'Tim manajemen profesional kami yang akan menangani semuanya. Mulai dari pemasaran digital, mengurus reservasi, hingga perawatan rutin seperti kebersihan kolam renang pribadi dan taman. Anda tidak perlu repot, cukup terima laporan performa investasi Anda.'
+  },
+  {
+    question: 'Apakah villa ini cocok untuk liburan keluarga pribadi?',
+    answer: 'Tentu saja. Sebagai pemilik, Anda mendapatkan jatah menginap gratis setiap tahunnya. Ini adalah salah satu keuntungan investasi terbaik: memiliki aset yang menghasilkan uang sekaligus tempat liburan premium untuk keluarga Anda.'
+  },
+  {
+    question: 'Apa saja yang termasuk dalam harga villa yang ditawarkan?',
+    answer: 'Harga villa yang kami tawarkan bersifat turnkey (siap huni dan beroperasi). Ini sudah mencakup bangunan fisik, perabotan lengkap (fully furnished), semua perizinan (IMB/PBG), dan biaya notaris. Tidak ada biaya tersembunyi.'
+  },
+    {
+    question: 'Apa yang terjadi setelah masa hak pakai 20 tahun berakhir?',
+    answer: 'Setelah 20 tahun, Anda memiliki hak prioritas untuk memperpanjang masa hak pakai sesuai dengan peraturan yang berlaku saat itu. Ini memastikan keberlanjutan investasi jangka panjang Anda.'
   }
 ];
 
-// Sub-komponen FAQ item
+// Sub-komponen FAQ item (Tidak ada perubahan, fungsionalitas sudah bagus)
 interface FAQItemProps {
   item: { question: string; answer: string };
   isOpen: boolean;
@@ -56,8 +68,9 @@ const FAQItem = ({ item, isOpen, onClick }: FAQItemProps) => (
   </div>
 );
 
+// Komponen Utama FAQ
 export default function FAQ() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(0); // Default buka pertanyaan pertama
 
   const handleItemClick = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -68,10 +81,10 @@ export default function FAQ() {
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700">
-            Pertanyaan yang Sering Diajukan
+            Pertanyaan Umum Seputar Investasi Villa
           </h2>
           <p className="text-lg text-slate-600">
-            Kumpulan jawaban untuk membantu Anda memahami setiap detail investasi Haspro Villa.
+            Temukan jawaban atas pertanyaan umum seputar <strong>investasi properti villa di Jogja</strong>. Kami merangkum semua yang perlu Anda ketahui untuk memulai <strong>investasi villa</strong> Anda dengan percaya diri.
           </p>
         </div>
         <div className="max-w-3xl mx-auto bg-white p-4 sm:p-8 rounded-2xl shadow-xl border">

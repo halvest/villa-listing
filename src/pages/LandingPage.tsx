@@ -1,6 +1,7 @@
 // src/pages/LandingPage.tsx
 import React, { useRef, useEffect } from 'react';
 import { useOutletContext, useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 // Import semua komponen section Anda
 import Hero from '../components/Hero';
@@ -9,14 +10,12 @@ import VillaListings from '../components/FeaturedListings';
 import ProfitSimulationForm from '../components/ProfitSimulationForm';
 import FAQ from '../components/FAQ';
 
-// 1. Perbarui tipe untuk menyertakan handleSectionChange
 type OutletContextType = {
   setCurrentSection: (section: string) => void;
   handleSectionChange: (sectionId: string) => void;
 };
 
 export default function LandingPage() {
-  // 2. Ambil juga handleSectionChange dari context
   const { setCurrentSection, handleSectionChange } = useOutletContext<OutletContextType>();
   const location = useLocation();
 
@@ -28,8 +27,7 @@ export default function LandingPage() {
     faq: useRef<HTMLDivElement>(null),
   };
 
-  // useEffect untuk IntersectionObserver (sudah benar)
-  useEffect(() => {
+   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -56,7 +54,6 @@ export default function LandingPage() {
     };
   }, [setCurrentSection]);
   
-  // useEffect untuk menangani scroll dari halaman lain (sudah benar)
   useEffect(() => {
     if (location.state?.scrollToSection) {
       const sectionId = location.state.scrollToSection;
@@ -71,8 +68,18 @@ export default function LandingPage() {
 
   return (
     <>
+      {/* ===== BLOK METADATA SEO UNTUK HALAMAN INI ===== */}
+      <Helmet>
+        <title>Investasi Villa di Jogja | Lodjisvarga Seturan & Valeeqa Villa</title>
+        <meta 
+          name="description" 
+          content="Temukan peluang investasi properti villa premium di Yogyakarta. Dikelola profesional, legalitas terjamin, dengan potensi keuntungan jangka panjang. Lihat unit tersedia!" 
+        />
+        <link rel="canonical" href="https://URL-WEBSITE-ANDA.com/" />
+      </Helmet>
+      {/* =================================================== */}
+
       <div id="home" ref={sectionRefs.home}>
-        {/* 3. Berikan prop onSectionChange ke Hero */}
         <Hero onSectionChange={handleSectionChange} />
       </div>
       <div id="about" ref={sectionRefs.about}>

@@ -1,14 +1,14 @@
 // src/components/About.tsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Home, MapPin } from 'lucide-react';
 import aboutImage from '../assets/images/lodjisvarga-seturan.jpg';
 
 // ====== Animation Variants ======
 const fadeInStagger = {
   initial: { opacity: 0 },
   whileInView: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
-  viewport: { once: true, amount: 0.3 },
+  viewport: { once: true, amount: 0.2 },
 };
 
 const fadeInItem = {
@@ -33,7 +33,7 @@ const About = React.memo(() => {
           >
             <img 
               src={aboutImage} 
-              alt="Villa Lodjisvarga Seturan Yogyakarta" 
+              alt="Suasana villa premium di Yogyakarta yang cocok untuk investasi properti dan liburan keluarga." 
               className="rounded-2xl object-cover w-full h-full shadow-2xl shadow-slate-300/60" 
             />
           </motion.div>
@@ -55,35 +55,38 @@ const About = React.memo(() => {
               variants={fadeInItem}
               className="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-5 text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-sky-700"
             >
-              Miliki Villa Eksklusif & Raih Kebebasan Finansial 
+              Kenapa Harus Berinvestasi Villa?
             </motion.h2>
             <motion.p
               variants={fadeInItem}
-              className="text-base md:text-lg text-slate-600 leading-relaxed mb-6"
+              className="text-base md:text-lg text-slate-600 leading-relaxed mb-8"
             >
-              <strong>Haspro Villa</strong> tidak hanya menjual properti—kami menghadirkan peluang 
-              investasi yang bekerja untuk Anda. Dengan lokasi premium di pusat destinasi wisata, 
-              villa Anda berpotensi menghasilkan <em>passive income</em> stabil tanpa repot.  
-              Semua dikelola secara profesional, legal, dan transparan.
+              Yogyakarta tidak hanya menawarkan pesona budaya, tapi juga peluang emas untuk <strong>investasi properti</strong>. Kami hadir untuk membantu Anda mengubah peluang tersebut menjadi aset nyata. Kami mengembangkan dan mengelola <strong>properti villa</strong> premium yang dirancang sebagai <strong>bentuk investasi jangka panjang</strong>, memberikan Anda <em>passive income</em> dari penyewaan sekaligus tempat istimewa <strong>untuk liburan keluarga</strong>.
             </motion.p>
             
-            <motion.ul variants={fadeInItem} className="space-y-4">
+            <motion.ul variants={fadeInItem} className="space-y-4 text-base">
               <li className="flex items-start gap-3">
-                <CheckCircle className="text-green-500 mt-1 flex-shrink-0" size={20} />
+                <MapPin className="text-green-500 mt-1 flex-shrink-0" size={20} />
                 <span className="text-slate-700">
-                  <strong>Lokasi Strategis:</strong> Berada di area bernilai tinggi dengan potensi okupansi yang terus meningkat.
+                  <strong>Lokasi Prima & Prospektif:</strong> Kami cermat dalam <strong>memilih villa</strong> di area-area strategis Yogyakarta dengan potensi pertumbuhan nilai properti yang tinggi, memastikan investasi Anda terus berkembang.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle className="text-green-500 mt-1 flex-shrink-0" size={20} />
+                <Home className="text-green-500 mt-1 flex-shrink-0" size={20} />
                 <span className="text-slate-700">
-                  <strong>Manajemen Professional:</strong> Mulai dari pemasaran, reservasi, hingga perawatan, semuanya kami tangani.
+                  <strong>Desain Unggul & Fasilitas Lengkap:</strong> Setiap <strong>villa dengan konsep</strong> modern dirancang untuk kenyamanan maksimal. Fasilitas seperti <strong>kolam renang pribadi</strong> dan <strong>ruang keluarga</strong> yang luas membuatnya sangat diminati di pasar sewa.
+                </span>
+              </li>
+               <li className="flex items-start gap-3">
+                <TrendingUp className="text-green-500 mt-1 flex-shrink-0" size={20} />
+                <span className="text-slate-700">
+                  <strong>Manajemen Profesional & ROI Optimal:</strong> Tim kami menangani semuanya, mulai dari pemasaran hingga perawatan, sehingga Anda bisa menikmati <strong>keuntungan investasi</strong> tanpa repot. Kami fokus memaksimalkan <strong>potensi keuntungan</strong> untuk Anda.
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <CheckCircle className="text-green-500 mt-1 flex-shrink-0" size={20} />
+                <ShieldCheck className="text-green-500 mt-1 flex-shrink-0" size={20} />
                 <span className="text-slate-700">
-                  <strong>Legalitas Terjamin:</strong> Hak pakai 20 tahun dengan perjanjian notaris, memberi Anda rasa aman penuh.
+                  <strong>Legalitas Aman & Transparan:</strong> Keamanan investasi Anda adalah prioritas kami. Semua properti memiliki legalitas yang jelas dan proses yang transparan di hadapan notaris.
                 </span>
               </li>
             </motion.ul>
